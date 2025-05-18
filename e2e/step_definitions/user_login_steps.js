@@ -1,40 +1,24 @@
 const { Given, When, Then } = require('@cucumber/cucumber');
-const { expect } = require('chai');
-const { chromium } = require('playwright');
-const selectors = require('../support/selectors');
+const { expect } = require('@playwright/test');
 
-Given('I navigate to the SDET Solutech Labs login page', async function() {
-  this.browser = await chromium.launch({ headless: false });
-  this.page = await this.browser.newPage();
-  await this.page.goto('https://sdet.solutechlabs.com/login');
+Given('the user is on the home page', async function () {
+  await this.page.goto('https://sdet.solutechlabs.com/', { timeout: 60000 });
 });
 
-When('I enter {string} in the email field', async function(email) {
-  await this.page.fill(selectors.loginPage.emailInput, email);
+When('the user navigates to the login page', async function () {
+  await this.page.getByRole('link', { name: 'Log in' }).click();
 });
 
-When('I enter {string} in the password field', async function(password) {
-  await this.page.fill(selectors.loginPage.passwordInput, password);
+When('the user enters invalid credentials', async function () {
+  await this.page.getByRole('textbox', { name: 'Email' }).fill('mwangit1996@gmail.com');
+  await this.page.getByRole('textbox', { name: 'Password' }).fill('solutech');
 });
 
-When('I click the login button', async function() {
-  await this.page.click(selectors.loginPage.loginButton);
+When('the user clicks the login button', async function () {
+  await this.page.getByRole('button', { name: 'Log in' }).click();
 });
 
-Then('I should see {string}', async function(errorMessage) {
-  const errorElement = await this.page.waitForSelector(selectors.loginPage.errorMessage);
-  const actualMessage = await errorElement.innerText();
-  expect(actualMessage).to.include(errorMessage);
-});
-
-Then('I should be redirected to the dashboard', async function() {
-  await this.page.waitForNavigation();
-  expect(this.page.url()).to.match(/\/dashboard$/);
-});
-
-Then('I should see {string} greeting', async function(greeting) {
-  const welcomeElement = await this.page.waitForSelector(selectors.loginPage.welcomeMessage);
-  const actualGreeting = await welcomeElement.innerText();
-  expect(actualGreeting).to.include(greeting);
-  await this.browser.close();
+Then('an error message {string} should be displayed', async function (errorText) {
+  const errorMessage = this.page.getByText(errorText);
+  await expect(errorMessage).toBeVisible();
 });
