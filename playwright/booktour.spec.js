@@ -21,7 +21,10 @@ test('Complete tour booking process with validation', async ({ page }) => {
   
   //Submit booking
   await page.locator('button').filter({ hasText: /^Book Tour$/ }).click();
-  
+
+  const bookingconfirmationwindow = await page.locator('ivu-modal-content');
+  await expect(bookingconfirmationwindow).toBeVisible();
+
   //Verify booking confirmation details
   await expect(page.locator('div').filter({ hasText: 'Ticket Details' }).nth(3)).toBeVisible({ timeout: 60000 });
   await expect(page.getByText(`Ticket Holder: ${bookingData.ticketHolderName}`)).toBeVisible();
