@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { time } = require('console');
 
-test('View All Bookings', async ({ page }) => {
+test('View All Tickets', async ({ page }) => {
   // Navigate to the login page
   await page.goto('https://sdet.solutechlabs.com/login', {timeout: 60000});
   
@@ -10,12 +10,12 @@ test('View All Bookings', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).fill('password');
   await page.getByRole('button', { name: 'Log in' }).click();
   
-  // Go to the Bookings page
-  await page.getByRole('link', { name: 'Bookings' }).click({timeout: 60000});
+  // Go to the Tickets page
+  await page.getByRole('link', { name: 'Tickets' }).click({timeout: 60000});
   
 // Verify the bookings table is present using its class
-  const bookingsTable = await page.locator('.ivu-table.ivu-table-default');
-  await expect(bookingsTable).toBeVisible();
-  expect(await bookingsTable.count()).toBeGreaterThan(0);
+  const ticketsTable = await page.locator('.ivu-table.ivu-table-default');
+  await expect(ticketsTable).toBeVisible();
+  expect(await ticketsTable.count()).toBeGreaterThan(0);
 
 });
